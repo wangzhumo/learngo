@@ -12,6 +12,13 @@ type Download struct {
 	TimeOut     time.Duration
 }
 
+func (download *Download) Post(url string, form map[string]string) string {
+	download.DownloadUrl = url
+	download.UserAgent = form["UserAgent"]
+	download.TimeOut = time.Minute
+	return "ok"
+}
+
 func (download *Download) Get(url string) string {
 	// start http
 	response, err := http.Get(url)

@@ -6,41 +6,45 @@ import (
 	"wangzhumo.com/learngo/interface/impl"
 )
 
+const requestHttpUrl = "https://www.baidu.com"
+
 type Retriever interface {
 	Get(url string) string
 }
 
 type Poster interface {
-	Post(url string,form map[string]string) string
+	Post(url string, form map[string]string) string
 }
 
+//RetrieverAndPoster 接口的组合
 type RetrieverAndPoster interface {
 	Retriever
 	Poster
-
 }
 
 func download(retriever Retriever) string {
-	return retriever.Get("https://www.baidu.com")
+	return retriever.Get(requestHttpUrl)
 }
 
 func post(p Poster) string {
-	return p.Post("https://www.baidu.com", map[string]string{
-		"name":"wangzhumo",
-		"age":"18",
+	return p.Post(requestHttpUrl, map[string]string{
+		"UserAgent": "OkHttp3.9.10/Wangzhumo-PC",
+		"name":      "wangzhumo",
 	})
 }
 
-func combint(s RetrieverAndPoster)  {
-	s.Get()
-	s.Post()
+func combine(s RetrieverAndPoster) string {
+	s.Post(requestHttpUrl, map[string]string{
+		"UserAgent": "OkHttp3.9.11/Wangzhumo-PC",
+		"name":      "wangzhumo-pc",
+	})
+	return s.Get(requestHttpUrl)
 }
 
-
-func showType(r Retriever)  {
+func showType(r Retriever) {
 	if t, ok := r.(*impls.Download); ok {
-		fmt.Println("UserAgent:",t.UserAgent)
-		fmt.Println("TimeOut:",t.TimeOut)
+		fmt.Println("UserAgent:", t.UserAgent)
+		fmt.Println("TimeOut:", t.TimeOut)
 	}
 }
 func RunInterface() {
@@ -51,12 +55,15 @@ func RunInterface() {
 
 	showType(d)
 
-	q:= impls.Queue{1}
+	q := impls.Queue{1}
 	q.Push(123)
 	q.Push(321)
 	q.Push(99)
 
-	fmt.Println("isEmpty = ",q.IsEmpty())
+	fmt.Println("isEmpty = ", q.IsEmpty())
 	fmt.Println(q)
-
+	down := &impls.Download{}
+	combine(down)
+	showType(down)
+	fmt.Println(q.String())
 }
