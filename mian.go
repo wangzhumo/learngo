@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	functions "wangzhumo.com/learngo/function"
+	fileServer "wangzhumo.com/learngo/errorhandler/server"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	functions.RunFunctional()
+	fileServer.RunFileServer()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }
