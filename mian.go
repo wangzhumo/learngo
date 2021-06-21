@@ -2,11 +2,11 @@ package main
 
 import (
 	"fmt"
-	fileServer "wangzhumo.com/learngo/errorhandler/server"
+	"wangzhumo.com/learngo/goroutine/channel"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	fileServer.RunFileServer()
+	channel.RunChannel()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }

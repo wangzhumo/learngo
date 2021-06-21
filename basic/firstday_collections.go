@@ -4,7 +4,6 @@ import (
 	"fmt"
 )
 
-
 // map
 func maps() {
 	var m = map[string]string{"name": "wzngzhumo", "age": "18"}

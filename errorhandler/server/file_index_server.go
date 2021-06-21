@@ -19,7 +19,7 @@ func errHandler(handler appHandler) func(writer http.ResponseWriter, request *ht
 			if r := recover(); r != nil {
 				// 打印出去
 				log.Printf("File Server Error : %v ", r)
-				http.Error(writer,http.StatusText(http.StatusInternalServerError),http.StatusInternalServerError)
+				http.Error(writer, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 			}
 		}()
 
@@ -28,12 +28,11 @@ func errHandler(handler appHandler) func(writer http.ResponseWriter, request *ht
 		code := http.StatusOK
 		if err != nil {
 			// 如果是userError 我们可以先处理掉
-			if userErr,ok := err.(UserError);ok{
+			if userErr, ok := err.(UserError); ok {
 				// 那么直接输出给用户即可
 				http.Error(writer, userErr.Message(), http.StatusBadRequest)
 				return
 			}
-
 
 			// log
 			log.Printf("Error handler : %s", err.Error())
@@ -52,7 +51,6 @@ func errHandler(handler appHandler) func(writer http.ResponseWriter, request *ht
 	}
 
 }
-
 
 type UserError interface {
 	error

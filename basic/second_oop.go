@@ -7,6 +7,7 @@ type TreeNode struct {
 	Value       int
 	Left, Right *TreeNode
 }
+
 //type 名字 struct {}
 // 以.的方式调用    值接收者（go 特有的）
 func (node TreeNode) print1() {

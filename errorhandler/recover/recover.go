@@ -4,13 +4,13 @@ import (
 	"fmt"
 )
 
-func tryRecover()  {
+func tryRecover() {
 	defer func() {
-		r:= recover()
-		if err,ok := r.(error); ok {
+		r := recover()
+		if err, ok := r.(error); ok {
 			// 是一个error,并获取到了panic的数据
-			fmt.Printf("Error find : %s \n",err)
-		}else{
+			fmt.Printf("Error find : %s \n", err)
+		} else {
 			panic(r)
 		}
 	}()
@@ -22,9 +22,6 @@ func tryRecover()  {
 
 }
 
-
-
-
-func RunRecovers()  {
+func RunRecovers() {
 	tryRecover()
 }

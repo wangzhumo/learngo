@@ -3,10 +3,10 @@ package impls
 import "fmt"
 
 func ExampleQueue_IsEmpty() {
-	q := Queue{1,2,3}
+	q := Queue{1, 2, 3}
 	if q.IsEmpty() {
 		fmt.Println("Empty")
-	}else {
+	} else {
 		fmt.Println("Not Empty")
 	}
 

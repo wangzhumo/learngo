@@ -12,7 +12,7 @@ const prefixPath = "/show/"
 
 type UserError string
 
-func (e UserError) Error() string  {
+func (e UserError) Error() string {
 	return e.Message()
 }
 
@@ -21,9 +21,9 @@ func (e UserError) Message() string {
 }
 
 func FileHttpHandler(writer http.ResponseWriter, request *http.Request) error {
-	if strings.Index(request.URL.Path,prefixPath) != 0 {
+	if strings.Index(request.URL.Path, prefixPath) != 0 {
 		// 如果有这个path,才继续，否则error
-		return UserError(fmt.Sprintf("%s has't routing",request.URL.Path))
+		return UserError(fmt.Sprintf("%s has't routing", request.URL.Path))
 	}
 
 	// 获取文件path
