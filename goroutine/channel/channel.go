@@ -6,6 +6,7 @@ import (
 )
 
 // 创建Worker 并且需要返回 chan
+// monokai
 func createWorker(taskId int) chan<- int {
 	c := make(chan int)
 	go workerTask(taskId, c)
