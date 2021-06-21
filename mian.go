@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
-	interfaces "wangzhumo.com/learngo/interface"
+	functions "wangzhumo.com/learngo/function"
 )
 
 func main() {
-	fmt.Println("hello world")
-	interfaces.RunInterface()
+	fmt.Println(">>>>>>>>>>>>>>start golang application")
+	functions.RunFunctional()
+	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }
