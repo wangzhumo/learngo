@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 
-	fileServer "wangzhumo.com/learngo/errorhandler/server"
-	httpClient "wangzhumo.com/learngo/http"
+	"wangzhumo.com/learngo/crawler"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	fileServer.RunFileServer()
-	httpClient.RunHttpClient()
+	crawler.RunCrawlerTask()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }
