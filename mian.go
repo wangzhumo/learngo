@@ -2,11 +2,14 @@ package main
 
 import (
 	"fmt"
-	"wangzhumo.com/learngo/goroutine/channel"
+
+	fileServer "wangzhumo.com/learngo/errorhandler/server"
+	httpClient "wangzhumo.com/learngo/http"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	channel.RunChannel()
+	fileServer.RunFileServer()
+	httpClient.RunHttpClient()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }
