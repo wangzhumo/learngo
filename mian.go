@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+
+	"wangzhumo.com/learngo/crawler"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	//selects.RunSelect()
+	crawler.RunCrawlerTask()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }

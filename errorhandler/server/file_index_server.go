@@ -3,7 +3,9 @@ package fileServer
 import (
 	"log"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
+
 	fileHandle "wangzhumo.com/learngo/errorhandler/server/handle"
 )
 
@@ -60,7 +62,6 @@ type UserError interface {
 // RunFileServer 显示文件
 func RunFileServer() {
 	http.HandleFunc("/", errHandler(fileHandle.FileHttpHandler))
-
 	// http://localhost:9999/show/errorhandler/defer/fib.txt
 	http.ListenAndServe(":9999", nil)
 }
