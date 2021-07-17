@@ -2,14 +2,11 @@ package main
 
 import (
 	"fmt"
-
-	"wangzhumo.com/learngo/crawler"
-	"wangzhumo.com/learngo/regex"
+	goroutines "wangzhumo.com/learngo/goroutine"
 )
 
 func main() {
 	fmt.Println(">>>>>>>>>>>>>>start golang application")
-	crawler.RunCrawlerTask()
-	regex.RunRegexTest()
+	goroutines.RunGoroutine()
 	fmt.Println(">>>>>>>>>>>>>>end golang application")
 }
