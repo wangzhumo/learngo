@@ -1,8 +1,9 @@
 package crawler
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
+	"golang.org/x/text/transform"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -11,9 +12,9 @@ import (
 	"golang.org/x/text/encoding"
 )
 
-const startPointUrl = "https://space.bilibili.com/585267"
+const startPointUrl = "https://www.zhenai.com/zhenghun"
 
-// 开启爬虫任务
+// RunCrawlerTask 开启爬虫任务
 func RunCrawlerTask() {
 	// 读取空间信息
 	resp, err := http.Get(startPointUrl)
@@ -33,11 +34,12 @@ func RunCrawlerTask() {
 	}
 
 	// 获取编码类型
+
 	e := deterEncoding(resp.Body)
-	//uft8Reader := transform.NewReader(resp.Body, e.NewDecoder())
-	fmt.Println(e)
+	uft8Reader := transform.NewReader(resp.Body, e.NewDecoder())
+
 	// 读取内容
-	b, err := ioutil.ReadAll(resp.Body)
+	b, err := ioutil.ReadAll(uft8Reader)
 	if err != nil {
 		panic(err)
 	}
@@ -49,11 +51,10 @@ func RunCrawlerTask() {
 // 获取编码类型
 func deterEncoding(r io.Reader) encoding.Encoding {
 	// io.Reader被读取的部分不能再次读取，所以需要复制
-	byteData, err := bufio.NewReader(r).Peek(1024)
-	if err != nil {
-		panic(err)
-	}
-	e, name, _ := charset.DetermineEncoding(byteData, "")
+	var buf bytes.Buffer
+	io.TeeReader(r, &buf)
+	all, _ := ioutil.ReadAll(&buf)
+	e, name, _ := charset.DetermineEncoding(all, "")
 	fmt.Println("Encoding Name : ", name)
 	return e
 }
