@@ -1,4 +1,4 @@
-package main
+package metting
 
 import (
 	"fmt"
@@ -35,6 +35,8 @@ func TestLotery(t *testing.T) {
 	testClient.GET("/").Expect().Status(httptest.StatusOK).
 		Body().Equal("当前人数：100\n")
 
-	testClient.GET("/lottery").Expect().Status(httptest.StatusOK).
+	testClient.GET("/lottery").Expect().Status(httptest.StatusOK)
+
+	testClient.GET("/").Expect().Status(httptest.StatusOK).
 		Body().Equal("当前人数：99\n")
 }

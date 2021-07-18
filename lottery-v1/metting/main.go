@@ -1,9 +1,10 @@
-package main
+package metting
 
 import (
 	"fmt"
 	"math/rand"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/kataras/iris/v12"
@@ -22,9 +23,13 @@ func newApp() *iris.Application {
 	return app
 }
 
+// 用户列表
 var userList []string
 
-func main() {
+// 安全 - 加锁 （互斥锁）
+var mut sync.Mutex
+
+func Init() {
 	app := newApp()
 	// init
 	userList = []string{}
@@ -33,19 +38,26 @@ func main() {
 	if err != nil {
 		return
 	}
+
+	// 初始化锁
+	mut = sync.Mutex{}
 }
 
 func (c *LotteryV1Controller) Get() string {
 	count := len(userList)
-	return fmt.Sprintf("当前人数：%d \n", count)
+	return fmt.Sprintf("当前人数：%d\n", count)
 }
 
 // PostImport 增加抽奖人
 func (c *LotteryV1Controller) PostImport() string {
 	users := c.Ctx.FormValue("users")
-	oldCount := len(userList)
 	usersList := strings.Split(users, ",")
 
+	// 并发 - 加锁
+	mut.Lock()
+	defer mut.Unlock()
+
+	oldCount := len(userList)
 	if len(usersList) > 0 {
 		for _, v := range usersList {
 			user := strings.TrimSpace(v)
@@ -61,6 +73,10 @@ func (c *LotteryV1Controller) PostImport() string {
 
 // GetLottery 抽奖
 func (c *LotteryV1Controller) GetLottery() string {
+	// 并发 - 加锁
+	mut.Lock()
+	defer mut.Unlock()
+
 	count := len(userList)
 	if count <= 0 {
 		return fmt.Sprintf("当前人数：%d 无法开始抽奖", count)
