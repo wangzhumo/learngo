@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/kataras/iris/v12"
@@ -38,6 +39,9 @@ type Prize struct {
 	rateMax  int      //小于中奖编码
 }
 
+// 互斥锁
+var mux *sync.Mutex
+
 // 最大中奖号码
 const rateMax = 10000
 
@@ -45,7 +49,7 @@ const rateMax = 10000
 var logger *log.Logger
 
 func initLog() {
-	f, _ := os.Create("/var/log/lottery_dome.log")
+	f, _ := os.Create("./lottery_dome.log")
 	logger = log.New(f, "", log.Ldate|log.Lmicroseconds)
 
 	fmt.Println("Logger Init...")
@@ -64,10 +68,10 @@ func initPrize() {
 		gtype:    giftTypeRealLarge,
 		data:     "",
 		datalist: nil,
-		total:    10,
-		left:     10,
+		total:    10000,
+		left:     10000,
 		inuse:    true,
-		rate:     10,
+		rate:     10000,
 		rateMin:  0,
 		rateMax:  0,
 	}
@@ -171,6 +175,7 @@ func newApp() *iris.Application {
 	mvc.New(app.Party("/")).Handle(&Lotteryv1Controller{})
 	initLog()
 	initPrize()
+	mux = &sync.Mutex{}
 	return app
 }
 
@@ -193,6 +198,59 @@ func (c *Lotteryv1Controller) Get() string {
 	}
 
 	return fmt.Sprintf("当前奖品种类 ：%d ,总数量 ： %d \n", count, total)
+}
+
+// 开始抽奖
+func (c *Lotteryv1Controller) GetLotterySafe() map[string]interface{} {
+	mux.Lock()
+	defer mux.Unlock()
+	code := 500
+	result := make(map[string]interface{})
+	result["code"] = code
+	// 1.为用户生成code
+	randomCode := generateCode()
+	// 2.查找这个code对应的奖品
+	for _, v := range prizeList {
+		// 过滤掉不能使用的prize
+		if !v.inuse || (v.total > 0 && v.left <= 0) {
+			continue
+		}
+		if v.rateMin <= int(randomCode) && v.rateMax >= int(randomCode) {
+			//区间内，中奖了
+			// 3.依据不同的type发奖
+			msg := ""
+			switch v.gtype {
+			case giftTypeCoin:
+				code, msg = sendCoin(v)
+
+			case giftTypeCoupon:
+				code, msg = sendCompon(v)
+
+			case giftTypeCouponFix:
+				code, msg = sendComponFix(v)
+
+			case giftTypeRealSamll:
+				code, msg = sendRealSmall(v)
+
+			case giftTypeRealLarge:
+				code, msg = sendRealLarge(v)
+
+			}
+			// 4.发奖结果判断
+			if code == 0 {
+				// 成功则生成获奖记录
+				savePrizeRecord(code, v.id, v.left, v.name, v.link, msg)
+				result["code"] = code
+				result["id"] = v.id
+				result["name"] = v.name
+				result["data"] = msg
+				// 然后break
+				break
+			}
+		}
+
+	}
+	return result
 }
 
 // 开始抽奖
