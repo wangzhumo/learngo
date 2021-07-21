@@ -27,7 +27,7 @@ func (dao *GiftDao) Get(id int) (*models.LtGift, error) {
 }
 
 // GetAll 获取所有的礼品数据
-func (dao *GiftDao) GetAll(id int) (list []models.LtGift, err error) {
+func (dao *GiftDao) GetAll() (list []models.LtGift, err error) {
 	lgList := make([]models.LtGift, 0)
 	err = dao.engine.
 		Asc("sys_status").
@@ -36,7 +36,7 @@ func (dao *GiftDao) GetAll(id int) (list []models.LtGift, err error) {
 	return lgList, err
 }
 
-// GetAll 获取所有的礼品数据
+// CountAll 获取所有的礼品数据
 func (dao *GiftDao) CountAll() (count int64) {
 	count, err := dao.engine.Count(&models.LtGift{})
 	if err != nil {
