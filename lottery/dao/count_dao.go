@@ -26,13 +26,26 @@ func (dao *CountDao) Get(id int) (*models.CountRecord, error) {
 	return lg, err
 }
 
+// Count 某个用户指定时间的次数
+func (dao CountDao) Count(uid int, day int) int {
+	c := &models.CountRecord{}
+	ok, err := dao.engine.
+		Where("uid=?", uid).
+		Where("day=?", day).
+		Get(c)
+	if !ok || err != nil {
+		return 0
+	}
+	return c.Num
+}
+
 // GetAll 获取所有的Day数据
-func (dao *CountDao) GetAll(page int,size int) (list []models.CountRecord, err error) {
-	offset:= (page-1)*size
+func (dao *CountDao) GetAll(page int, size int) (list []models.CountRecord, err error) {
+	offset := (page - 1) * size
 	lgList := make([]models.CountRecord, 0)
 	err = dao.engine.
 		Desc("id").
-		Limit(size,offset).
+		Limit(size, offset).
 		Find(&lgList)
 	return lgList, err
 }
@@ -51,7 +64,6 @@ func (dao *CountDao) Search(uid, day int) []models.CountRecord {
 		return datalist
 	}
 }
-
 
 // CountAll 获取所有数据的总数
 func (dao *CountDao) CountAll() (count int64) {

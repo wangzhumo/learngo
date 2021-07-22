@@ -27,11 +27,12 @@ func (dao *BlackUserDao) Get(id int) (*models.UserBlack, error) {
 }
 
 // GetAll 获取所有的礼品数据
-func (dao *BlackUserDao) GetAll(id int) (list []models.UserBlack, err error) {
+func (dao *BlackUserDao) GetAll(page int, size int) (list []models.UserBlack, err error) {
+	offset := size * (page - 1)
 	lgList := make([]models.UserBlack, 0)
 	err = dao.engine.
-		Asc("sys_status").
-		Asc("displayorder").
+		Desc("id").
+		Limit(size, offset).
 		Find(&lgList)
 	return lgList, err
 }
@@ -44,8 +45,6 @@ func (dao *BlackUserDao) CountAll() (count int64) {
 	}
 	return count
 }
-
-
 
 // Update 强制更新，因为使用Model更新，只会更新不为空的值
 func (dao *BlackUserDao) Update(data *models.UserBlack, columes []string) (err error) {
