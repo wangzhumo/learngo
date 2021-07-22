@@ -2,12 +2,13 @@ package services
 
 import (
 	"com.wangzhumo.lottery/dao"
+	"com.wangzhumo.lottery/datasource"
 	"com.wangzhumo.lottery/models"
 )
 
 type CodeService interface {
-	Get(id int) *models.LtCoupon
-	GetAll(page, size int) []models.LtCoupon
+	Get(id int) (*models.LtCoupon,error)
+	GetAll(page, size int) ([]models.LtCoupon,error)
 	CountAll() int64
 	CountByGift(giftId int) int64
 	Search(giftId int) []models.LtCoupon
@@ -60,4 +61,9 @@ func (c *codeService) NextUsingCode(giftId, codeId int) *models.LtCoupon {
 
 func (c *codeService) UpdateByCode(data *models.LtCoupon, columns []string) error {
 	return c.dao.UpdateByCode(data, columns)
+}
+
+
+func NewCodeService() CodeService {
+	return &codeService{dao: dao.NewLtCouponDao(datasource.InstanceDB())}
 }

@@ -2,12 +2,13 @@ package services
 
 import (
 	"com.wangzhumo.lottery/dao"
+	"com.wangzhumo.lottery/datasource"
 	"com.wangzhumo.lottery/models"
 )
 
 type BlackIpService interface {
-	Get(id int) *models.IpBlack
-	GetAll(page, size int) []models.IpBlack
+	Get(id int) (*models.IpBlack,error)
+	GetAll(page, size int) ([]models.IpBlack,error)
 	CountAll() int64
 	Search(ip string) []models.IpBlack
 	Update(user *models.IpBlack, columns []string) error
@@ -45,4 +46,9 @@ func (b *blackIpService) Insert(ip *models.IpBlack) error {
 
 func (b *blackIpService) GetByIp(ip string) *models.IpBlack {
 	return b.dao.GetByIp(ip)
+}
+
+
+func NewBlackIpServices() BlackIpService {
+	return &blackIpService{dao: dao.NewBlackIpDao(datasource.InstanceDB())}
 }

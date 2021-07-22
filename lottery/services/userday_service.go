@@ -2,6 +2,7 @@ package services
 
 import (
 	"com.wangzhumo.lottery/dao"
+	"com.wangzhumo.lottery/datasource"
 	"com.wangzhumo.lottery/models"
 	"fmt"
 	"strconv"
@@ -9,7 +10,7 @@ import (
 )
 
 type UserDayService interface {
-	Get(id int) *models.CountRecord
+	Get(id int) (*models.CountRecord,error)
 	GetAll(page, size int) ([]models.CountRecord, error)
 	Count(uid, day int) int
 	CountAll() int64
@@ -60,4 +61,10 @@ func (u *userDayService) GetUserToday(uid int) *models.CountRecord {
 		return &countRecords[0]
 	}
 	return nil
+}
+
+func NewUserDayService() UserDayService {
+	return &userDayService{
+		dao: dao.NewCountDao(datasource.InstanceDB()),
+	}
 }

@@ -2,6 +2,7 @@ package services
 
 import (
 	"com.wangzhumo.lottery/dao"
+	"com.wangzhumo.lottery/datasource"
 	"com.wangzhumo.lottery/models"
 )
 
@@ -48,6 +49,6 @@ func (g *giftServices) Insert(data *models.LtGift) error {
 
 func NewGiftServices() GiftServices {
 	return &giftServices{
-		dao: dao.NewGiftDao(nil),
+		dao: dao.NewGiftDao(datasource.InstanceDB()),
 	}
 }

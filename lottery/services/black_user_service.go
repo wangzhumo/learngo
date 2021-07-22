@@ -2,6 +2,7 @@ package services
 
 import (
 	"com.wangzhumo.lottery/dao"
+	"com.wangzhumo.lottery/datasource"
 	"com.wangzhumo.lottery/models"
 )
 
@@ -35,4 +36,9 @@ func (b *blackUserService) Update(user *models.UserBlack, columns []string) erro
 
 func (b *blackUserService) Insert(user *models.UserBlack) error {
 	return b.dao.Insert(user)
+}
+
+
+func NewBlackUserService() UserService {
+	return &blackUserService{dao: dao.NewBlackUserDao(datasource.InstanceDB())}
 }
