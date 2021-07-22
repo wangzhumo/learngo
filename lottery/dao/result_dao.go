@@ -1,12 +1,8 @@
-/**
- * 抽奖系统的数据库操作
- */
 package dao
 
 import (
-	"github.com/go-xorm/xorm"
-
-	"imooc.com/lottery/models"
+	"com.wangzhumo.lottery/models"
+	"xorm.io/xorm"
 )
 
 type ResultDao struct {
@@ -19,8 +15,8 @@ func NewResultDao(engine *xorm.Engine) *ResultDao {
 	}
 }
 
-func (d *ResultDao) Get(id int) *models.LtResult {
-	data := &models.LtResult{Id: id}
+func (d *ResultDao) Get(id int) *models.GiftRecord {
+	data := &models.GiftRecord{Id: id}
 	ok, err := d.engine.Get(data)
 	if ok && err == nil {
 		return data
@@ -30,9 +26,9 @@ func (d *ResultDao) Get(id int) *models.LtResult {
 	}
 }
 
-func (d *ResultDao) GetAll(page, size int) []models.LtResult {
+func (d *ResultDao) GetAll(page, size int) []models.GiftRecord {
 	offset := (page - 1) * size
-	datalist := make([]models.LtResult, 0)
+	datalist := make([]models.GiftRecord, 0)
 	err := d.engine.
 		Desc("id").
 		Limit(size, offset).
@@ -46,7 +42,7 @@ func (d *ResultDao) GetAll(page, size int) []models.LtResult {
 
 func (d *ResultDao) CountAll() int64 {
 	num, err := d.engine.
-		Count(&models.LtResult{})
+		Count(&models.GiftRecord{})
 	if err != nil {
 		return 0
 	} else {
@@ -54,8 +50,8 @@ func (d *ResultDao) CountAll() int64 {
 	}
 }
 
-func (d *ResultDao) GetNewPrize(size int, giftIds []int) []models.LtResult {
-	datalist := make([]models.LtResult, 0)
+func (d *ResultDao) GetNewPrize(size int, giftIds []int) []models.GiftRecord {
+	datalist := make([]models.GiftRecord, 0)
 	err := d.engine.
 		In("gift_id", giftIds).
 		Desc("id").
@@ -68,9 +64,9 @@ func (d *ResultDao) GetNewPrize(size int, giftIds []int) []models.LtResult {
 	}
 }
 
-func (d *ResultDao) SearchByGift(giftId, page, size int) []models.LtResult {
+func (d *ResultDao) SearchByGift(giftId, page, size int) []models.GiftRecord {
 	offset := (page - 1) * size
-	datalist := make([]models.LtResult, 0)
+	datalist := make([]models.GiftRecord, 0)
 	err := d.engine.
 		Where("gift_id=?", giftId).
 		Desc("id").
@@ -83,9 +79,9 @@ func (d *ResultDao) SearchByGift(giftId, page, size int) []models.LtResult {
 	}
 }
 
-func (d *ResultDao) SearchByUser(uid, page, size int) []models.LtResult {
+func (d *ResultDao) SearchByUser(uid, page, size int) []models.GiftRecord {
 	offset := (page - 1) * size
-	datalist := make([]models.LtResult, 0)
+	datalist := make([]models.GiftRecord, 0)
 	err := d.engine.
 		Where("uid=?", uid).
 		Desc("id").
@@ -101,7 +97,7 @@ func (d *ResultDao) SearchByUser(uid, page, size int) []models.LtResult {
 func (d *ResultDao) CountByGift(giftId int) int64 {
 	num, err := d.engine.
 		Where("gift_id=?", giftId).
-		Count(&models.LtResult{})
+		Count(&models.GiftRecord{})
 	if err != nil {
 		return 0
 	} else {
@@ -112,7 +108,7 @@ func (d *ResultDao) CountByGift(giftId int) int64 {
 func (d *ResultDao) CountByUser(uid int) int64 {
 	num, err := d.engine.
 		Where("uid=?", uid).
-		Count(&models.LtResult{})
+		Count(&models.GiftRecord{})
 	if err != nil {
 		return 0
 	} else {
@@ -121,17 +117,17 @@ func (d *ResultDao) CountByUser(uid int) int64 {
 }
 
 func (d *ResultDao) Delete(id int) error {
-	data := &models.LtResult{Id: id, SysStatus: 1}
-	_, err := d.engine.Id(data.Id).Update(data)
+	data := &models.GiftRecord{Id: id, SysStatus: 1}
+	_, err := d.engine.ID(data.Id).Update(data)
 	return err
 }
 
-func (d *ResultDao) Update(data *models.LtResult, columns []string) error {
-	_, err := d.engine.Id(data.Id).MustCols(columns...).Update(data)
+func (d *ResultDao) Update(data *models.GiftRecord, columns []string) error {
+	_, err := d.engine.ID(data.Id).MustCols(columns...).Update(data)
 	return err
 }
 
-func (d *ResultDao) Create(data *models.LtResult) error {
+func (d *ResultDao) Insert(data *models.GiftRecord) error {
 	_, err := d.engine.Insert(data)
 	return err
 }

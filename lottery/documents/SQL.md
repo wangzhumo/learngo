@@ -120,3 +120,23 @@ create table count_record
 ) CHARACTER SET utf8 COLLATE utf8_general_ci comment '每日次数表';
 
 ```
+
+## 结果
+```sql
+CREATE TABLE `lt_result` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `gift_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖品ID，关联lt_gift表',
+  `gift_name` varchar(255) NOT NULL DEFAULT '' COMMENT '奖品名称',
+  `gift_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '奖品类型，同lt_gift. gtype',
+  `uid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
+  `prize_code` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '抽奖编号（4位的随机数）',
+  `gift_data` varchar(255) NOT NULL DEFAULT '' COMMENT '获奖信息',
+  `sys_created` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `sys_ip` varchar(50) NOT NULL DEFAULT '' COMMENT '用户抽奖的IP',
+  `sys_status` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT '状态，0 正常，1删除，2作弊',
+  PRIMARY KEY (`id`),
+  KEY `uid` (`uid`),
+  KEY `gift_id` (`gift_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+```

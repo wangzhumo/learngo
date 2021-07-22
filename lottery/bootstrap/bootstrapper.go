@@ -3,9 +3,8 @@ package bootstrap
 import (
 	"com.wangzhumo.lottery/conf"
 	"github.com/kataras/iris/v12"
-	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/middleware/logger"
-	recover2 "github.com/kataras/iris/v12/middleware/recover"
+	"github.com/kataras/iris/v12/middleware/recover"
 	"time"
 )
 
@@ -15,31 +14,32 @@ const (
 	Favicon      = "favicon.ico"
 )
 
-type Configurator func(bootstrapper *Bootstrapper)
+type Configurator func(*Bootstrapper)
 
 // Bootstrapper 封装
+// 使用Go内建的嵌入机制(匿名嵌入)，允许类型之前共享代码和数据
 type Bootstrapper struct {
 	*iris.Application           // 继承
 	AppName           string    // 名字
 	AppOwner          string    // 负责人
-	AppSwapData       time.Time // 更新时间
+	AppSpawnDate       time.Time // 更新时间
 }
 
 // New 创建一个Iris的实例 - Bootstrapper
-func New(appName string, appOwner string, configurators ...Configurator) (bootstrapper *Bootstrapper) {
+func New(appName string, appOwner string, cfgs ...Configurator) *Bootstrapper {
 	// 创建实例
-	bootstrapper = &Bootstrapper{
+	bootstrapper := &Bootstrapper{
 		Application: iris.New(),
 		AppName:     appName,
 		AppOwner:    appOwner,
-		AppSwapData: time.Time{},
+		AppSpawnDate: time.Time{},
 	}
 	// 调用其他人的初始化方法
-	for _, configurator := range configurators {
+	for _, configurator := range cfgs {
 		configurator(bootstrapper)
 	}
 	// 返回即可
-	return
+	return bootstrapper
 }
 
 // Configure 提供给外部修改配置的方法
@@ -62,7 +62,7 @@ func (bootstrapper *Bootstrapper) Bootstrap() *Bootstrapper {
 	// 定时服务
 	bootstrapper.SetupCron()
 	// Recover服务
-	bootstrapper.Use(recover2.New())
+	bootstrapper.Use(recover.New())
 	bootstrapper.Use(logger.New())
 	return bootstrapper
 }
@@ -100,18 +100,18 @@ func (bootstrapper *Bootstrapper) SetupViews(viewDir string) {
 
 // SetupErrorHandler 一些通用的异常处理
 func (bootstrapper *Bootstrapper) SetupErrorHandler() {
-	bootstrapper.OnAnyErrorCode(func(context *context.Context) {
+	bootstrapper.OnAnyErrorCode(func(ctx iris.Context) {
 		errorData := iris.Map{
 			"app":     bootstrapper.AppName,
-			"status":  context.GetStatusCode(),
-			"message": context.Values().GetString("message"),
+			"status":  ctx.GetStatusCode(),
+			"message": ctx.Values().GetString("message"),
 		}
-		if jsonOutput := context.URLParamExists("json"); jsonOutput {
-			_, _ = context.JSON(errorData)
+		if jsonOutput := ctx.URLParamExists("json"); jsonOutput {
+			_, _ = ctx.JSON(errorData)
 			return
 		}
-		context.ViewData("Err", errorData)
-		context.ViewData("Title", "Error")
-		context.View("shared/error.html")
+		ctx.ViewData("Err", errorData)
+		ctx.ViewData("Title", "Error")
+		ctx.View("shared/error.html")
 	})
 }
