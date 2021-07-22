@@ -27,11 +27,12 @@ func (dao *LtCouponDao) Get(id int) (*models.LtCoupon, error) {
 }
 
 // GetAll 获取所有的礼品数据
-func (dao *LtCouponDao) GetAll(id int) (list []models.LtCoupon, err error) {
+func (dao *LtCouponDao) GetAll(page int, size int) (list []models.LtCoupon, err error) {
+	offset := (page - 1) * size
 	lgList := make([]models.LtCoupon, 0)
 	err = dao.engine.
-		Asc("sys_status").
-		Asc("id").
+		Desc("id").
+		Limit(size, offset).
 		Find(&lgList)
 	return lgList, err
 }
@@ -45,8 +46,8 @@ func (dao *LtCouponDao) CountAll() (count int64) {
 	return count
 }
 
-func (d *LtCouponDao) CountByGift(giftId int) int64 {
-	num, err := d.engine.
+func (dao *LtCouponDao) CountByGift(giftId int) int64 {
+	num, err := dao.engine.
 		Where("gift_id=?", giftId).
 		Count(&models.LtCoupon{})
 	if err != nil {
@@ -56,9 +57,9 @@ func (d *LtCouponDao) CountByGift(giftId int) int64 {
 	}
 }
 
-func (d *LtCouponDao) Search(giftId int) []models.LtCoupon {
+func (dao *LtCouponDao) Search(giftId int) []models.LtCoupon {
 	datalist := make([]models.LtCoupon, 0)
-	err := d.engine.
+	err := dao.engine.
 		Where("gift_id=?", giftId).
 		Desc("id").
 		Find(&datalist)
@@ -88,13 +89,10 @@ func (dao *LtCouponDao) Insert(data *models.LtCoupon) (err error) {
 	return
 }
 
-
-
-
 // NextUsingCode 找到下一个可用的最小的优惠券
-func (d *LtCouponDao) NextUsingCode(giftId, codeId int) *models.LtCoupon {
+func (dao *LtCouponDao) NextUsingCode(giftId, codeId int) *models.LtCoupon {
 	datalist := make([]models.LtCoupon, 0)
-	err := d.engine.Where("gift_id=?", giftId).
+	err := dao.engine.Where("gift_id=?", giftId).
 		Where("sys_status=?", 0).
 		Where("id>?", codeId).
 		Asc("id").Limit(1).
@@ -107,8 +105,8 @@ func (d *LtCouponDao) NextUsingCode(giftId, codeId int) *models.LtCoupon {
 }
 
 //UpdateByCode 根据唯一的code来更新
-func (d *LtCouponDao) UpdateByCode(data *models.LtCoupon, columns []string) error {
-	_, err := d.engine.Where("code=?", data.Code).
+func (dao *LtCouponDao) UpdateByCode(data *models.LtCoupon, columns []string) error {
+	_, err := dao.engine.Where("code=?", data.Code).
 		MustCols(columns...).Update(data)
 	return err
 }

@@ -22,27 +22,27 @@ type giftServices struct {
 	dao *dao.GiftDao
 }
 
-func (g giftServices) Get(id int) (*models.LtGift, error) {
+func (g *giftServices) Get(id int) (*models.LtGift, error) {
 	return g.dao.Get(id)
 }
 
-func (g giftServices) GetAll() (list []models.LtGift, err error) {
+func (g *giftServices) GetAll() (list []models.LtGift, err error) {
 	return g.dao.GetAll()
 }
 
-func (g giftServices) CountAll() int64 {
+func (g *giftServices) CountAll() int64 {
 	return g.dao.CountAll()
 }
 
-func (g giftServices) Delete(id int) error {
+func (g *giftServices) Delete(id int) error {
 	return g.dao.Delete(id)
 }
 
-func (g giftServices) Update(data *models.LtGift, columns []string) error {
-	return g.dao.Update(data,columns)
+func (g *giftServices) Update(data *models.LtGift, columns []string) error {
+	return g.dao.Update(data, columns)
 }
 
-func (g giftServices) Insert(data *models.LtGift) error {
+func (g *giftServices) Insert(data *models.LtGift) error {
 	return g.dao.Insert(data)
 }
 

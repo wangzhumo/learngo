@@ -23,35 +23,35 @@ type userDayService struct {
 	dao *dao.CountDao
 }
 
-func (u userDayService) Get(id int) (*models.CountRecord, error) {
+func (u *userDayService) Get(id int) (*models.CountRecord, error) {
 	return u.dao.Get(id)
 }
 
-func (u userDayService) GetAll(page int, size int) ([]models.CountRecord, error) {
+func (u *userDayService) GetAll(page int, size int) ([]models.CountRecord, error) {
 	return u.dao.GetAll(page, size)
 }
 
-func (u userDayService) Count(uid, day int) int {
+func (u *userDayService) Count(uid, day int) int {
 	return u.dao.Count(uid, day)
 }
 
-func (u userDayService) CountAll() int64 {
+func (u *userDayService) CountAll() int64 {
 	return u.dao.CountAll()
 }
 
-func (u userDayService) Search(uid, day int) []models.CountRecord {
+func (u *userDayService) Search(uid, day int) []models.CountRecord {
 	return u.dao.Search(uid, day)
 }
 
-func (u userDayService) Update(user *models.CountRecord, columns []string) error {
+func (u *userDayService) Update(user *models.CountRecord, columns []string) error {
 	return u.dao.Update(user, columns)
 }
 
-func (u userDayService) Insert(user *models.CountRecord) error {
+func (u *userDayService) Insert(user *models.CountRecord) error {
 	return u.dao.Insert(user)
 }
 
-func (u userDayService) GetUserToday(uid int) *models.CountRecord {
+func (u *userDayService) GetUserToday(uid int) *models.CountRecord {
 	year, month, day := time.Now().Date()
 	strDay := fmt.Sprintf("%d%02d%02d", year, month, day)
 	date, _ := strconv.Atoi(strDay)
